@@ -31,6 +31,7 @@
 //#define FF_DREAMER_MACHINE
 //#define FF_DREAMER_NX_MACHINE
 //#define FF_DREMEL_3D20_MACHINE
+//#define FF_POWERSPEC_MACHINE
 
 /* Select black or silver pulley */
 //#define FF_BLACK_PULLEY
@@ -40,13 +41,13 @@
   #define FF_BLACK_PULLEY
 #endif
 
-/* Switch left and right extruder */ 
+/* Switch left and right extruder */
 //#define FF_EXTRUDER_SWAP
-#if NONE(FF_DREAMER_MACHINE, FF_INVENTOR_MACHINE) && ENABLED(FF_EXTRUDER_SWAP)
+#if NONE(FF_DREAMER_MACHINE, FF_INVENTOR_MACHINE,FF_POWERSPEC_MACHINE) && ENABLED(FF_EXTRUDER_SWAP)
   #error FF_EXTRUDER_SWAP works only with Dreamer, Inventor
 #endif
 
-/* Select UI type */ 
+/* Select UI type */
 //#define USE_OLD_MARLIN_UI
 //#define USE_MKS_UI
 
@@ -171,6 +172,8 @@
 // Name displayed in the LCD "Ready" message and Info menu
 #if ENABLED(FF_DREMEL_3D20_MACHINE)
   #define CUSTOM_MACHINE_NAME "Dremel"
+#elif ENABLED(FF_POWERSPEC_MACHINE)
+  #define CUSTOM_MACHINE_NAME "PowerSpec"
 #else
   #define CUSTOM_MACHINE_NAME "FlashForge"
 #endif
@@ -243,7 +246,7 @@
 
 // This defines the number of extruders
 // :[0, 1, 2, 3, 4, 5, 6, 7, 8]
-#if ANY(FF_INVENTOR_MACHINE, FF_DREAMER_MACHINE)
+#if ANY(FF_INVENTOR_MACHINE, FF_DREAMER_MACHINE,FF_POWERSPEC_MACHINE)
   #define FF_FIX_EXTRUDER_FAN 1
   #define EXTRUDERS 2
 #else
@@ -407,7 +410,7 @@
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
 // The offset has to be X=0, Y=0 for the extruder 0 hotend (default extruder).
 // For the other hotends it is their distance from the extruder 0 hotend.
-#if ANY(FF_INVENTOR_MACHINE, FF_DREAMER_MACHINE)
+#if ANY(FF_INVENTOR_MACHINE, FF_DREAMER_MACHINE,FF_POWERSPEC_MACHINE)
   #if ENABLED(FF_EXTRUDER_SWAP)
     #define HOTEND_OFFSET_X { 0.0, 34.0 } // (mm) relative X-offset for each nozzle
   #else
@@ -1044,7 +1047,7 @@
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 //#define USE_XMIN_PLUG
 //#define USE_YMIN_PLUG
-#if ANY(FF_DREAMER_MACHINE, FF_DREAMER_NX_MACHINE) 
+#if ANY(FF_DREAMER_MACHINE, FF_DREAMER_NX_MACHINE,FF_POWERSPEC_MACHINE)
   #define USE_ZMIN_PLUG
 #endif
 //#define USE_IMIN_PLUG
@@ -1297,7 +1300,7 @@
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-#if ANY(FF_DREAMER_MACHINE, FF_DREAMER_NX_MACHINE)
+#if ANY(FF_DREAMER_MACHINE, FF_DREAMER_NX_MACHINE,FF_POWERSPEC_MACHINE)
   #define Z_MIN_PROBE_PIN Z_MAX_PIN
 #else
   #define Z_MIN_PROBE_PIN Z_MIN_PIN /* Inventor */
@@ -1629,7 +1632,7 @@
 
 // @section extruder
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if ANY(FF_DREAMER_MACHINE, FF_INVENTOR_MACHINE)
+#if ANY(FF_DREAMER_MACHINE, FF_INVENTOR_MACHINE,FF_POWERSPEC_MACHINE)
   #if ENABLED(FF_EXTRUDER_SWAP)
       #define INVERT_E0_DIR false
       #if ENABLED(FF_DREAMER_OLD_MB)
@@ -1704,7 +1707,7 @@
   #define Y_MAX_POS     75.00
   #define X_MIN_POS  (-110.00-FF_TOOL_OFFSET)
   #define Y_MIN_POS    -75.00
-#elif ENABLED(FF_DREAMER_MACHINE)
+#elif ANY(FF_DREAMER_MACHINE,FF_POWERSPEC_MACHINE)
   #define X_MAX_POS   (156.99-FF_TOOL_OFFSET)
   #define Y_MAX_POS     79.99
   #define X_MIN_POS  (-113.00-FF_TOOL_OFFSET)
@@ -2026,7 +2029,7 @@
 #define LCD_BED_TRAMMING
 
 #if ENABLED(LCD_BED_TRAMMING)
-  #if ANY(FF_DREAMER_MACHINE, FF_INVENTOR_MACHINE)
+  #if ANY(FF_DREAMER_MACHINE, FF_INVENTOR_MACHINE,FF_POWERSPEC_MACHINE)
     #define BED_TRAMMING_INSET_LFRB { 40, 30, 40, 30 } // (mm) Left, Front, Right, Back insets
   #else
     #define BED_TRAMMING_INSET_LFRB { 30, 30, 30, 30 } // (mm) Left, Front, Right, Back insets

@@ -724,7 +724,7 @@ void menu_advanced_settings() {
     );
   #endif
 
-  #if ANY( FF_DREMEL_3D20_MACHINE, FF_DREAMER_MACHINE )
+  #if ANY( FF_DREMEL_3D20_MACHINE, FF_DREAMER_MACHINE,FF_POWERSPEC_MACHINE )
     CONFIRM_ITEM_F( F( "Firmware update trigger" ),
       MSG_YES, MSG_NO,
       []
@@ -742,7 +742,7 @@ void menu_advanced_settings() {
         /* readback signature: magic string + mcu link hash */
         memcpy( signature, (uint8_t*)sig_address, sizeof( signature ) );
         HAL_FLASH_Unlock();
-        __HAL_FLASH_CLEAR_FLAG( FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR | 
+        __HAL_FLASH_CLEAR_FLAG( FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
                                 FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR | FLASH_FLAG_PGSERR
                                 );
         HAL_FLASHEx_Erase( &erase,  &erase_err );

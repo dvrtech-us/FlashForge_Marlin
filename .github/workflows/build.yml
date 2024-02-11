@@ -465,3 +465,44 @@ jobs:
                 name: marlin_${{ steps.firmware.outputs.fw_version }}_${{ steps.firmware.outputs.target_ui }}_${{ steps.date.outputs.timestamp }}
                 path: build/*.bin
                 retention-days: 5
+            # powerspec Builds
+            - name: Build Marlin - powerspec
+              id: powerspec
+              run: |
+                echo "Build Environment:" $BUILD_ENV
+                echo "Build Flags:" $PLATFORMIO_BUILD_FLAGS
+                pio run --project-dir $PROJECT_DIR -e $BUILD_ENV --silent
+                ./$FF_FW_TOOL -k $KEY -e -i $FW_PATH/firmware.bin -o build/$MACHINE"_"$VERSION$NAME_POSTFIX"_"$TIMESTAMP".bin"
+                rm -rf $FW_PATH/*
+              env:
+                MACHINE: powerspec
+                PROJECT_DIR: ${{ steps.firmware.outputs.project_dir }}
+                BUILD_ENV: ${{ steps.firmware.outputs.build_env }}
+                FF_FW_TOOL: ${{ steps.ff_fw_tool.outputs.fw_tool }}
+                KEY: ${{ steps.firmware.outputs.encryption_key }}
+                FW_PATH: ${{ steps.firmware.outputs.project_dir }}/.pio/build/${{ steps.firmware.outputs.build_env }}
+                VERSION: ${{ steps.firmware.outputs.fw_version }}
+                TIMESTAMP: ${{ steps.date.outputs.timestamp }}
+                NAME_POSTFIX: 
+                PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY -DFF_EXTRUDER_SWAP -DFF_DREAMER_OLD_MB
+            
+            # powerspec Builds
+            - name: Build Marlin - powerspec_swap
+              id: powerspec-swap
+              run: |
+                echo "Build Environment:" $BUILD_ENV
+                echo "Build Flags:" $PLATFORMIO_BUILD_FLAGS
+                pio run --project-dir $PROJECT_DIR -e $BUILD_ENV --silent
+                ./$FF_FW_TOOL -k $KEY -e -i $FW_PATH/firmware.bin -o build/$MACHINE"_"$VERSION$NAME_POSTFIX"_"$TIMESTAMP".bin"
+                rm -rf $FW_PATH/*
+              env:
+                MACHINE: powerspec
+                PROJECT_DIR: ${{ steps.firmware.outputs.project_dir }}
+                BUILD_ENV: ${{ steps.firmware.outputs.build_env }}
+                FF_FW_TOOL: ${{ steps.ff_fw_tool.outputs.fw_tool }}
+                KEY: ${{ steps.firmware.outputs.encryption_key }}
+                FW_PATH: ${{ steps.firmware.outputs.project_dir }}/.pio/build/${{ steps.firmware.outputs.build_env }}
+                VERSION: ${{ steps.firmware.outputs.fw_version }}
+                TIMESTAMP: ${{ steps.date.outputs.timestamp }}
+                NAME_POSTFIX: 
+                PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY  -DFF_DREAMER_OLD_MB
