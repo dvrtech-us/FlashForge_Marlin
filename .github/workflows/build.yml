@@ -479,7 +479,6 @@ jobs:
                 NAME_POSTFIX: 
                 PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY -DFF_EXTRUDER_SWAP -DFF_DREAMER_OLD_MB
             
-            # powerspec Builds
             - name: Build Marlin - powerspec_swap
               id: powerspec-swap
               run: |

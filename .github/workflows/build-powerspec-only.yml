@@ -1,4 +1,4 @@
-name: Build
+name: Build-Powerspec-Marlin
 
 on:
   workflow_dispatch:
@@ -90,7 +90,7 @@ jobs:
                 FW_PATH: ${{ steps.firmware.outputs.project_dir }}/.pio/build/${{ steps.firmware.outputs.build_env }}
                 VERSION: ${{ steps.firmware.outputs.fw_version }}
                 TIMESTAMP: ${{ steps.date.outputs.timestamp }}
-                NAME_POSTFIX: 
+                NAME_POSTFIX: _swap
                 PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY  -DFF_DREAMER_OLD_MB
             - name: Display Finished Builds
               run: find build/ -name "*.bin"
