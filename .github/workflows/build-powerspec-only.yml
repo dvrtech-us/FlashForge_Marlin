@@ -6,7 +6,7 @@ on:
 jobs:
     build:
         name: Build Marlin Binaries
-        runs-on: ubuntu-latest
+        runs-on: self-hosted
         steps:
             - name: Set Timestamp to Current Build Environment Date
               id: date
