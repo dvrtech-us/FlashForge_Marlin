@@ -1,0 +1,102 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+    build:
+        name: Build Marlin Binaries
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set Timestamp to Current Build Environment Date
+              id: date
+              run: echo "timestamp=$(date +'%m%d%Y')" >> $GITHUB_OUTPUT
+
+            - name: Checkout Code
+              uses: actions/checkout@v3
+              with:
+                submodules: recursive
+                
+            - uses: actions/cache@v3
+              with:
+                path: |
+                  ~/.cache/pip
+                  ~/.platformio/.cache
+                key: ${{ runner.os }}-pio
+            - uses: actions/setup-python@v4
+              with: 
+                python-version: '3.9'
+            - name: Install PlatformIO Core
+              run: pip install --upgrade platformio
+
+            - name: Build FlashForge Firmware Tool
+              id: ff_fw_tool
+              run: |
+                gcc $FW_TOOL_SRC_DIR/main.c -o $FW_TOOL_SRC_DIR/ff_fw_tool
+                echo "fw_tool=$FW_TOOL_SRC_DIR/ff_fw_tool" >> $GITHUB_OUTPUT
+              env:
+                FW_TOOL_SRC_DIR: flashforge_firmware_tool
+
+            - name: Set Persistent Firmware Variables
+              id: firmware
+              run: | 
+                echo "project_dir=Marlin" >> $GITHUB_OUTPUT
+                echo "build_env=FF_F407ZG" >> $GITHUB_OUTPUT
+                echo "fw_version=$(awk '/fine SHORT_BUILD_VERSION/{ print substr($3,2,length($3)-2) }' Marlin/Marlin/Version.h)" >> $GITHUB_OUTPUT
+                echo "encryption_key=flashforge790315" >> $GITHUB_OUTPUT
+                echo "dremel_key=flashforge123456" >> $GITHUB_OUTPUT
+                echo "target_ui=color_ui" >> $GITHUB_OUTPUT
+
+            - name: Create Build Directory
+              run: mkdir -p build -v
+
+          
+            # powerspec Builds
+            - name: Build Marlin - powerspec
+              id: powerspec
+              run: |
+                echo "Build Environment:" $BUILD_ENV
+                echo "Build Flags:" $PLATFORMIO_BUILD_FLAGS
+                pio run --project-dir $PROJECT_DIR -e $BUILD_ENV --silent
+                ./$FF_FW_TOOL -k $KEY -e -i $FW_PATH/firmware.bin -o build/$MACHINE"_"$VERSION$NAME_POSTFIX"_"$TIMESTAMP".bin"
+                rm -rf $FW_PATH/*
+              env:
+                MACHINE: powerspec
+                PROJECT_DIR: ${{ steps.firmware.outputs.project_dir }}
+                BUILD_ENV: ${{ steps.firmware.outputs.build_env }}
+                FF_FW_TOOL: ${{ steps.ff_fw_tool.outputs.fw_tool }}
+                KEY: ${{ steps.firmware.outputs.encryption_key }}
+                FW_PATH: ${{ steps.firmware.outputs.project_dir }}/.pio/build/${{ steps.firmware.outputs.build_env }}
+                VERSION: ${{ steps.firmware.outputs.fw_version }}
+                TIMESTAMP: ${{ steps.date.outputs.timestamp }}
+                NAME_POSTFIX: 
+                PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY -DFF_EXTRUDER_SWAP -DFF_DREAMER_OLD_MB
+            
+            # powerspec Builds
+            - name: Build Marlin - powerspec_swap
+              id: powerspec-swap
+              run: |
+                echo "Build Environment:" $BUILD_ENV
+                echo "Build Flags:" $PLATFORMIO_BUILD_FLAGS
+                pio run --project-dir $PROJECT_DIR -e $BUILD_ENV --silent
+                ./$FF_FW_TOOL -k $KEY -e -i $FW_PATH/firmware.bin -o build/$MACHINE"_"$VERSION$NAME_POSTFIX"_"$TIMESTAMP".bin"
+                rm -rf $FW_PATH/*
+              env:
+                MACHINE: powerspec
+                PROJECT_DIR: ${{ steps.firmware.outputs.project_dir }}
+                BUILD_ENV: ${{ steps.firmware.outputs.build_env }}
+                FF_FW_TOOL: ${{ steps.ff_fw_tool.outputs.fw_tool }}
+                KEY: ${{ steps.firmware.outputs.encryption_key }}
+                FW_PATH: ${{ steps.firmware.outputs.project_dir }}/.pio/build/${{ steps.firmware.outputs.build_env }}
+                VERSION: ${{ steps.firmware.outputs.fw_version }}
+                TIMESTAMP: ${{ steps.date.outputs.timestamp }}
+                NAME_POSTFIX: 
+                PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY  -DFF_DREAMER_OLD_MB
+            - name: Display Finished Builds
+              run: find build/ -name "*.bin"
+  
+            - name: Upload Binaries Artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: marlin_${{ steps.firmware.outputs.fw_version }}_${{ steps.firmware.outputs.target_ui }}_${{ steps.date.outputs.timestamp }}
+                  path: build/*.bin

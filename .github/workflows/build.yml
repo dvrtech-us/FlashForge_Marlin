@@ -456,14 +456,7 @@ jobs:
                 NAME_POSTFIX: _la
                 PLATFORMIO_BUILD_FLAGS: -DFF_DREAMER_NX_MACHINE -DLIN_ADVANCE
                 
-            - name: Display Finished Builds
-              run: find build/ -name "*.bin"
 
-            - name: Upload Binaries Artifact
-              uses: actions/upload-artifact@v3
-              with:
-                name: marlin_${{ steps.firmware.outputs.fw_version }}_${{ steps.firmware.outputs.target_ui }}_${{ steps.date.outputs.timestamp }}
-                path: build/*.bin
                 retention-days: 5
             # powerspec Builds
             - name: Build Marlin - powerspec
@@ -506,3 +499,11 @@ jobs:
                 TIMESTAMP: ${{ steps.date.outputs.timestamp }}
                 NAME_POSTFIX: 
                 PLATFORMIO_BUILD_FLAGS: -DFF_POWERSPEC_MACHINE -DFF_SILVER_PULLEY  -DFF_DREAMER_OLD_MB
+            - name: Display Finished Builds
+              run: find build/ -name "*.bin"
+
+            - name: Upload Binaries Artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: marlin_${{ steps.firmware.outputs.fw_version }}_${{ steps.firmware.outputs.target_ui }}_${{ steps.date.outputs.timestamp }}
+                path: build/*.bin

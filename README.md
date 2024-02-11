@@ -28,6 +28,7 @@
 - Monoprice Inventor 1
 
 #### Installation guide:
+- [Guide to picking the correct firmware file](https://github.com/moonglow/FlashForge_Marlin/wiki/Prebuilt-Marlin-firmware)
 - [Installing Marlin on FlashForge ( Windows )](https://github.com/moonglow/FlashForge_Marlin/wiki/Windows-instalation-guide)
 - [Installing Marlin on FlashForge ( Linux )](https://github.com/moonglow/FlashForge_Marlin/wiki/Linux-instalation-guide)
 - [Installing Marlin on Dremel 3D20 ( Windows )](https://github.com/moonglow/FlashForge_Marlin/wiki/Installing-Marlin-on-Dremel-3D20)
